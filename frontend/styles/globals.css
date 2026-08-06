@@ -122,3 +122,341 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ============================================================
+   DUKAAN MITRA — Premium Voice Agent UI
+   ============================================================ */
+
+/* Welcome Root */
+.dukaan-welcome-root {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #06060f;
+}
+
+/* Background gradient blobs */
+.dukaan-bg-gradient-1 {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  animation: dukaan-float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dukaan-bg-gradient-2 {
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  filter: blur(80px);
+  animation: dukaan-float 10s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+/* Subtle grid pattern */
+.dukaan-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* Welcome section */
+.dukaan-welcome-section {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  gap: 0;
+}
+
+/* Badge */
+.dukaan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.dukaan-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #818cf8;
+  animation: dukaan-pulse-dot 2s ease-in-out infinite;
+}
+
+/* Orb Container */
+.dukaan-orb-container {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.dukaan-orb-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%);
+  animation: dukaan-orb-breathe 4s ease-in-out infinite;
+}
+
+.dukaan-orb {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c7d2fe;
+  box-shadow:
+    0 0 40px rgba(99, 102, 241, 0.3),
+    0 0 80px rgba(99, 102, 241, 0.15),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.3);
+  animation: dukaan-orb-rotate 12s linear infinite;
+  border: 1px solid rgba(129, 140, 248, 0.3);
+}
+
+/* Floating Particles */
+.dukaan-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #818cf8;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dukaan-particle-1 {
+  top: 20%;
+  left: 15%;
+  animation: dukaan-particle-float 6s ease-in-out infinite 0s;
+}
+.dukaan-particle-2 {
+  top: 70%;
+  right: 20%;
+  animation: dukaan-particle-float 5s ease-in-out infinite 1s;
+}
+.dukaan-particle-3 {
+  bottom: 25%;
+  left: 25%;
+  animation: dukaan-particle-float 7s ease-in-out infinite 2s;
+}
+.dukaan-particle-4 {
+  top: 30%;
+  right: 10%;
+  animation: dukaan-particle-float 4s ease-in-out infinite 0.5s;
+  background: #a78bfa;
+}
+.dukaan-particle-5 {
+  bottom: 15%;
+  right: 30%;
+  animation: dukaan-particle-float 6.5s ease-in-out infinite 1.5s;
+  background: #c4b5fd;
+  width: 3px;
+  height: 3px;
+}
+.dukaan-particle-6 {
+  top: 50%;
+  left: 10%;
+  animation: dukaan-particle-float 5.5s ease-in-out infinite 3s;
+  background: #6366f1;
+  width: 5px;
+  height: 5px;
+}
+
+/* Title */
+.dukaan-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.dukaan-title-accent {
+  background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle */
+.dukaan-subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* Feature pills */
+.dukaan-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.dukaan-pill {
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.dukaan-pill:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+/* CTA Button */
+.dukaan-cta-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 16px 40px !important;
+  height: auto !important;
+  border-radius: 100px !important;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  color: white !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.4), 0 0 0 1px rgba(129, 140, 248, 0.2) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.dukaan-cta-button:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5), 0 0 0 1px rgba(129, 140, 248, 0.4) !important;
+}
+
+.dukaan-cta-button:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* Voice info */
+.dukaan-voice-info {
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
+.dukaan-voice-info strong {
+  color: #818cf8;
+}
+
+/* Footer */
+.dukaan-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  z-index: 20;
+}
+
+.dukaan-footer p {
+  font-size: 0.7rem;
+  color: #475569;
+  letter-spacing: 0.03em;
+}
+
+.dukaan-footer strong {
+  color: #818cf8;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes dukaan-float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -20px); }
+}
+
+@keyframes dukaan-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes dukaan-orb-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes dukaan-orb-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dukaan-particle-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-30px) scale(1);
+  }
+  75% {
+    opacity: 0.3;
+  }
+}

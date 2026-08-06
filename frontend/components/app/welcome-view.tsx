@@ -1,20 +1,39 @@
 import { Button } from '@/components/ui/button';
 
-function WelcomeImage() {
+function PulsingOrb() {
   return (
-    <svg
-      width="64"
-      height="64"
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="text-fg0 mb-4 size-16"
-    >
-      <path
-        d="M15 24V40C15 40.7957 14.6839 41.5587 14.1213 42.1213C13.5587 42.6839 12.7956 43 12 43C11.2044 43 10.4413 42.6839 9.87868 42.1213C9.31607 41.5587 9 40.7957 9 40V24C9 23.2044 9.31607 22.4413 9.87868 21.8787C10.4413 21.3161 11.2044 21 12 21C12.7956 21 13.5587 21.3161 14.1213 21.8787C14.6839 22.4413 15 23.2044 15 24ZM22 5C21.2044 5 20.4413 5.31607 19.8787 5.87868C19.3161 6.44129 19 7.20435 19 8V56C19 56.7957 19.3161 57.5587 19.8787 58.1213C20.4413 58.6839 21.2044 59 22 59C22.7956 59 23.5587 58.6839 24.1213 58.1213C24.6839 57.5587 25 56.7957 25 56V8C25 7.20435 24.6839 6.44129 24.1213 5.87868C23.5587 5.31607 22.7956 5 22 5ZM32 13C31.2044 13 30.4413 13.3161 29.8787 13.8787C29.3161 14.4413 29 15.2044 29 16V48C29 48.7957 29.3161 49.5587 29.8787 50.1213C30.4413 50.6839 31.2044 51 32 51C32.7956 51 33.5587 50.6839 34.1213 50.1213C34.6839 49.5587 35 48.7957 35 48V16C35 15.2044 34.6839 14.4413 34.1213 13.8787C33.5587 13.3161 32.7956 13 32 13ZM42 21C41.2043 21 40.4413 21.3161 39.8787 21.8787C39.3161 22.4413 39 23.2044 39 24V40C39 40.7957 39.3161 41.5587 39.8787 42.1213C40.4413 42.6839 41.2043 43 42 43C42.7957 43 43.5587 42.6839 44.1213 42.1213C44.6839 41.5587 45 40.7957 45 40V24C45 23.2044 44.6839 22.4413 44.1213 21.8787C43.5587 21.3161 42.7957 21 42 21ZM52 17C51.2043 17 50.4413 17.3161 49.8787 17.8787C49.3161 18.4413 49 19.2044 49 20V44C49 44.7957 49.3161 45.5587 49.8787 46.1213C50.4413 46.6839 51.2043 47 52 47C52.7957 47 53.5587 46.6839 54.1213 46.1213C54.6839 45.5587 55 44.7957 55 44V20C55 19.2044 54.6839 18.4413 54.1213 17.8787C53.5587 17.3161 52.7957 17 52 17Z"
-        fill="currentColor"
-      />
-    </svg>
+    <div className="dukaan-orb-container">
+      <div className="dukaan-orb-glow" />
+      <div className="dukaan-orb">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 14V26C10 26.5304 9.78929 27.0391 9.41421 27.4142C9.03914 27.7893 8.53043 28 8 28C7.46957 28 6.96086 27.7893 6.58579 27.4142C6.21071 27.0391 6 26.5304 6 26V14C6 13.4696 6.21071 12.9609 6.58579 12.5858C6.96086 12.2107 7.46957 12 8 12C8.53043 12 9.03914 12.2107 9.41421 12.5858C9.78929 12.9609 10 13.4696 10 14ZM15 3C14.4696 3 13.9609 3.21071 13.5858 3.58579C13.2107 3.96086 13 4.46957 13 5V35C13 35.5304 13.2107 36.0391 13.5858 36.4142C13.9609 36.7893 14.4696 37 15 37C15.5304 37 16.0391 36.7893 16.4142 36.4142C16.7893 36.0391 17 35.5304 17 35V5C17 4.46957 16.7893 3.96086 16.4142 3.58579C16.0391 3.21071 15.5304 3 15 3ZM22 8C21.4696 8 20.9609 8.21071 20.5858 8.58579C20.2107 8.96086 20 9.46957 20 10V30C20 30.5304 20.2107 31.0391 20.5858 31.4142C20.9609 31.7893 21.4696 32 22 32C22.5304 32 23.0391 31.7893 23.4142 31.4142C23.7893 31.0391 24 30.5304 24 30V10C24 9.46957 23.7893 8.96086 23.4142 8.58579C23.0391 8.21071 22.5304 8 22 8ZM29 12C28.4696 12 27.9609 12.2107 27.5858 12.5858C27.2107 12.9609 27 13.4696 27 14V26C27 26.5304 27.2107 27.0391 27.5858 27.4142C27.9609 27.7893 28.4696 28 29 28C29.5304 28 30.0391 27.7893 30.4142 27.4142C30.7893 27.0391 31 26.5304 31 26V14C31 13.4696 30.7893 12.9609 30.4142 12.5858C30.0391 12.2107 29.5304 12 29 12ZM36 10C35.4696 10 34.9609 10.2107 34.5858 10.5858C34.2107 10.9609 34 11.4696 34 12V28C34 28.5304 34.2107 29.0391 34.5858 29.4142C34.9609 29.7893 35.4696 30 36 30C36.5304 30 37.0391 29.7893 37.4142 29.4142C37.7893 29.0391 38 28.5304 38 28V12C38 11.4696 37.7893 10.9609 37.4142 10.5858C37.0391 10.2107 36.5304 10 36 10Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+      {/* Floating particles */}
+      <div className="dukaan-particle dukaan-particle-1" />
+      <div className="dukaan-particle dukaan-particle-2" />
+      <div className="dukaan-particle dukaan-particle-3" />
+      <div className="dukaan-particle dukaan-particle-4" />
+      <div className="dukaan-particle dukaan-particle-5" />
+      <div className="dukaan-particle dukaan-particle-6" />
+    </div>
+  );
+}
+
+function FeaturePill({ text }: { text: string }) {
+  return (
+    <span className="dukaan-pill">
+      {text}
+    </span>
   );
 }
 
@@ -29,35 +48,64 @@ export const WelcomeView = ({
   ref,
 }: React.ComponentProps<'div'> & WelcomeViewProps) => {
   return (
-    <div ref={ref}>
-      <section className="bg-background flex flex-col items-center justify-center text-center">
-        <WelcomeImage />
+    <div ref={ref} className="dukaan-welcome-root">
+      {/* Background gradient effects */}
+      <div className="dukaan-bg-gradient-1" />
+      <div className="dukaan-bg-gradient-2" />
+      <div className="dukaan-bg-grid" />
 
-        <p className="text-foreground max-w-prose pt-1 leading-6 font-medium">
-          Chat live with your voice AI agent
+      <section className="dukaan-welcome-section">
+        {/* Badge */}
+        <div className="dukaan-badge">
+          <span className="dukaan-badge-dot" />
+          <span>Local Commerce AI</span>
+        </div>
+
+        {/* Orb */}
+        <PulsingOrb />
+
+        {/* Title */}
+        <h1 className="dukaan-title">
+          Dukaan <span className="dukaan-title-accent">Mitra</span>
+        </h1>
+
+        <p className="dukaan-subtitle">
+          Your AI-powered shop assistant for Indian local businesses.
+          <br />
+          Manage inventory, billing, payments & more — just by talking.
         </p>
 
+        {/* Feature pills */}
+        <div className="dukaan-pills-row">
+          <FeaturePill text="📦 Inventory" />
+          <FeaturePill text="💰 Billing" />
+          <FeaturePill text="📱 UPI & Payments" />
+          <FeaturePill text="📊 GST Help" />
+        </div>
+
+        {/* CTA Button */}
         <Button
           size="lg"
           onClick={onStartCall}
-          className="mt-6 w-64 rounded-full font-mono text-xs font-bold tracking-wider uppercase"
+          className="dukaan-cta-button"
         >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" x2="12" y1="19" y2="22"/>
+          </svg>
           {startButtonText}
         </Button>
+
+        <p className="dukaan-voice-info">
+          🗣️ Powered by <strong>Murf Falcon</strong> · Indian English Voice
+        </p>
       </section>
 
-      <div className="fixed bottom-5 left-0 flex w-full items-center justify-center">
-        <p className="text-muted-foreground max-w-prose pt-1 text-xs leading-5 font-normal text-pretty md:text-sm">
-          Need help getting set up? Check out the{' '}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://docs.livekit.io/agents/start/voice-ai/"
-            className="underline"
-          >
-            Voice AI quickstart
-          </a>
-          .
+      {/* Footer */}
+      <div className="dukaan-footer">
+        <p>
+          Built for <strong>#VoiceForBharat</strong> · 10 Days of Voice Agents Challenge
         </p>
       </div>
     </div>

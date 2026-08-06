@@ -14,15 +14,36 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage['role'];
 };
 
-export const Message = ({ className, from, ...props }: MessageProps) => (
+export const Message = ({ className, from, children, ...props }: MessageProps) => (
   <div
     className={cn(
-      'group flex w-full max-w-[95%] flex-col gap-2',
-      from === 'user' ? 'is-user ml-auto justify-end' : 'is-assistant',
+      'group flex w-full gap-3 items-end mb-4',
+      from === 'user' ? 'is-user flex-row-reverse ml-auto justify-start' : 'is-assistant flex-row mr-auto justify-start',
       className
     )}
     {...props}
-  />
+  >
+    {/* Avatar */}
+    <div className={cn(
+      "shrink-0 flex items-center justify-center rounded-full overflow-hidden size-8 mb-1",
+      from === 'user' ? "bg-indigo-600 text-white shadow-lg" : "bg-zinc-800 shadow-lg border border-white/10"
+    )}>
+      {from === 'user' ? (
+        <span className="text-xs font-bold">You</span>
+      ) : (
+        <img src="/avatar.png" alt="Agent" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span class="text-xs font-bold text-indigo-400">AI</span>'; }} />
+      )}
+    </div>
+    
+    {/* Message Body Container */}
+    <div className={cn(
+      "flex flex-col gap-1 max-w-[85%]",
+      from === 'user' ? "items-end" : "items-start"
+    )}>
+      {from === 'assistant' && <span className="text-[10px] text-muted-foreground ml-2 font-medium tracking-wide uppercase">Dukaan Mitra</span>}
+      {children}
+    </div>
+  </div>
 );
 
 export type MessageContentProps = HTMLAttributes<HTMLDivElement>;
@@ -30,9 +51,9 @@ export type MessageContentProps = HTMLAttributes<HTMLDivElement>;
 export const MessageContent = ({ children, className, ...props }: MessageContentProps) => (
   <div
     className={cn(
-      'is-user:dark flex w-fit max-w-full min-w-0 flex-col gap-2 overflow-hidden text-sm',
-      'group-[.is-user]:bg-secondary group-[.is-user]:text-foreground group-[.is-user]:ml-auto group-[.is-user]:rounded-lg group-[.is-user]:px-4 group-[.is-user]:py-3',
-      'group-[.is-assistant]:text-foreground',
+      'flex w-fit max-w-full min-w-0 flex-col gap-2 overflow-hidden text-sm px-4 py-3 rounded-2xl shadow-sm',
+      'group-[.is-user]:bg-indigo-600 group-[.is-user]:text-white group-[.is-user]:rounded-br-sm',
+      'group-[.is-assistant]:bg-zinc-800/80 group-[.is-assistant]:text-foreground group-[.is-assistant]:rounded-bl-sm group-[.is-assistant]:backdrop-blur-sm group-[.is-assistant]:border group-[.is-assistant]:border-white/5',
       className
     )}
     {...props}
