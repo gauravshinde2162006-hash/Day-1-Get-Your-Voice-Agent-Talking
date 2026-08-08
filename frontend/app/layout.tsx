@@ -82,7 +82,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 rel="noopener noreferrer"
                 href="https://murf.ai/api"
                 className="underline underline-offset-4"
-                style={{ color: '#818cf8' }}
+                style={{ color: '#f97316' }}
               >
                 Murf Falcon
               </a>

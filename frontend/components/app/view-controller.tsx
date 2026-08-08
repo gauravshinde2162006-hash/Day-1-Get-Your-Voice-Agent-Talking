@@ -1,14 +1,15 @@
 'use client';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'motion/react';
 import { useSessionContext } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
-import { AgentSessionView_01 } from '@/components/agents-ui/blocks/agent-session-view-01';
+import { DukaanSessionView } from '@/components/app/dukaan-session-view';
 import { WelcomeView } from '@/components/app/welcome-view';
 
 const MotionWelcomeView = motion.create(WelcomeView);
-const MotionSessionView = motion.create(AgentSessionView_01);
+const MotionSessionView = motion.create(DukaanSessionView);
 
 const VIEW_MOTION_PROPS = {
   variants: {
@@ -35,23 +36,51 @@ interface ViewControllerProps {
 export function ViewController({ appConfig }: ViewControllerProps) {
   const { isConnected, start } = useSessionContext();
   const { resolvedTheme } = useTheme();
+  const [hasEnded, setHasEnded] = useState(false);
+
+  useEffect(() => {
+    if (isConnected) {
+      setHasEnded(false);
+    }
+  }, [isConnected]);
+
+  const wasConnected = useRef(false);
+  useEffect(() => {
+    if (isConnected) wasConnected.current = true;
+    if (!isConnected && wasConnected.current) {
+      setHasEnded(true);
+    }
+  }, [isConnected]);
+
+  // Show ended state inside session view when call has ended
+  const showSessionView = isConnected || hasEnded;
+
+  const handleRestart = () => {
+    setHasEnded(false);
+    // Small delay to allow welcome view to render before starting
+    setTimeout(() => {
+      start();
+    }, 100);
+  };
 
   return (
     <AnimatePresence mode="wait">
-      {/* Welcome view */}
-      {!isConnected && (
+      {/* Welcome view — shown only when not connected and not ended */}
+      {!showSessionView && (
         <MotionWelcomeView
           key="welcome"
           {...VIEW_MOTION_PROPS}
-          startButtonText={appConfig.startButtonText}
+          startButtonText="Baat Shuru Karein"
           onStartCall={start}
         />
       )}
-      {/* Session view */}
-      {isConnected && (
+      {/* Session view — shown when connected OR when call has ended (to show ended state) */}
+      {showSessionView && (
         <MotionSessionView
           key="session-view"
           {...VIEW_MOTION_PROPS}
+          hasEnded={hasEnded && !isConnected}
+          onRestart={handleRestart}
           supportsChatInput={appConfig.supportsChatInput}
           supportsVideoInput={appConfig.supportsVideoInput}
           supportsScreenShare={appConfig.supportsScreenShare}

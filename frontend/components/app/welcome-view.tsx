@@ -1,21 +1,24 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { ShopfrontIllustration } from '@/components/app/shopfront-illustration';
 
-function PulsingOrb() {
+function StoreIcon() {
   return (
     <div className="dukaan-orb-container">
       <div className="dukaan-orb-glow" />
-      <div className="dukaan-orb">
+      <div className="dukaan-orb" style={{ background: 'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)', boxShadow: '0 0 40px rgba(249,115,22,0.3)', border: '1px solid rgba(253,186,116,0.3)' }}>
         <svg
-          width="40"
-          height="40"
-          viewBox="0 0 40 40"
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path
-            d="M10 14V26C10 26.5304 9.78929 27.0391 9.41421 27.4142C9.03914 27.7893 8.53043 28 8 28C7.46957 28 6.96086 27.7893 6.58579 27.4142C6.21071 27.0391 6 26.5304 6 26V14C6 13.4696 6.21071 12.9609 6.58579 12.5858C6.96086 12.2107 7.46957 12 8 12C8.53043 12 9.03914 12.2107 9.41421 12.5858C9.78929 12.9609 10 13.4696 10 14ZM15 3C14.4696 3 13.9609 3.21071 13.5858 3.58579C13.2107 3.96086 13 4.46957 13 5V35C13 35.5304 13.2107 36.0391 13.5858 36.4142C13.9609 36.7893 14.4696 37 15 37C15.5304 37 16.0391 36.7893 16.4142 36.4142C16.7893 36.0391 17 35.5304 17 35V5C17 4.46957 16.7893 3.96086 16.4142 3.58579C16.0391 3.21071 15.5304 3 15 3ZM22 8C21.4696 8 20.9609 8.21071 20.5858 8.58579C20.2107 8.96086 20 9.46957 20 10V30C20 30.5304 20.2107 31.0391 20.5858 31.4142C20.9609 31.7893 21.4696 32 22 32C22.5304 32 23.0391 31.7893 23.4142 31.4142C23.7893 31.0391 24 30.5304 24 30V10C24 9.46957 23.7893 8.96086 23.4142 8.58579C23.0391 8.21071 22.5304 8 22 8ZM29 12C28.4696 12 27.9609 12.2107 27.5858 12.5858C27.2107 12.9609 27 13.4696 27 14V26C27 26.5304 27.2107 27.0391 27.5858 27.4142C27.9609 27.7893 28.4696 28 29 28C29.5304 28 30.0391 27.7893 30.4142 27.4142C30.7893 27.0391 31 26.5304 31 26V14C31 13.4696 30.7893 12.9609 30.4142 12.5858C30.0391 12.2107 29.5304 12 29 12ZM36 10C35.4696 10 34.9609 10.2107 34.5858 10.5858C34.2107 10.9609 34 11.4696 34 12V28C34 28.5304 34.2107 29.0391 34.5858 29.4142C34.9609 29.7893 35.4696 30 36 30C36.5304 30 37.0391 29.7893 37.4142 29.4142C37.7893 29.0391 38 28.5304 38 28V12C38 11.4696 37.7893 10.9609 37.4142 10.5858C37.0391 10.2107 36.5304 10 36 10Z"
-            fill="currentColor"
-          />
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       </div>
       {/* Floating particles */}
@@ -37,6 +40,78 @@ function FeaturePill({ text }: { text: string }) {
   );
 }
 
+/** Mic error card with step-by-step bilingual instructions */
+function MicErrorCard({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="dukaan-mic-error">
+      <div className="dukaan-mic-error-header">
+        <div className="dukaan-mic-error-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23" />
+            <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+            <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.12 1.49-.34 2.18" />
+            <line x1="12" x2="12" y1="19" y2="22" />
+          </svg>
+        </div>
+        <span className="dukaan-mic-error-title">🎤 Microphone Access Denied</span>
+      </div>
+      <ul className="dukaan-mic-error-steps">
+        <li>
+          <span className="dukaan-mic-error-step-num">1</span>
+          <span>Browser ke address bar mein 🔒 lock icon par click karein</span>
+        </li>
+        <li>
+          <span className="dukaan-mic-error-step-num">2</span>
+          <span>Site Settings ya Permissions kholein</span>
+        </li>
+        <li>
+          <span className="dukaan-mic-error-step-num">3</span>
+          <span>Microphone → <strong>Allow</strong> select karein</span>
+        </li>
+        <li>
+          <span className="dukaan-mic-error-step-num">4</span>
+          <span>Page refresh karein ya neeche Retry dabayein</span>
+        </li>
+      </ul>
+      <button className="dukaan-mic-error-retry" onClick={onRetry}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="23 4 23 10 17 10" />
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+        </svg>
+        Retry Karein
+      </button>
+    </div>
+  );
+}
+
+/** Generic error card for non-mic errors */
+function GenericErrorCard({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="dukaan-mic-error" style={{ borderColor: 'rgba(249, 115, 22, 0.2)', background: 'rgba(249, 115, 22, 0.06)' }}>
+      <div className="dukaan-mic-error-header">
+        <div className="dukaan-mic-error-icon" style={{ background: 'rgba(249, 115, 22, 0.15)' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        </div>
+        <span className="dukaan-mic-error-title" style={{ color: '#fdba74' }}>⚠️ Connection Error</span>
+      </div>
+      <p style={{ fontSize: '0.8rem', color: '#cbd5e1', lineHeight: 1.5, marginBottom: '12px' }}>
+        {message}
+      </p>
+      <button className="dukaan-mic-error-retry" style={{ borderColor: 'rgba(249, 115, 22, 0.3)', color: '#fdba74', background: 'rgba(249, 115, 22, 0.1)' }} onClick={onRetry}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="23 4 23 10 17 10" />
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+        </svg>
+        Retry
+      </button>
+    </div>
+  );
+}
+
 interface WelcomeViewProps {
   startButtonText: string;
   onStartCall: () => void;
@@ -47,12 +122,42 @@ export const WelcomeView = ({
   onStartCall,
   ref,
 }: React.ComponentProps<'div'> & WelcomeViewProps) => {
+  const [error, setError] = useState<string | null>(null);
+  const [isMicError, setIsMicError] = useState(false);
+
+  const handleStart = async () => {
+    try {
+      setError(null);
+      setIsMicError(false);
+      await onStartCall();
+    } catch (e: any) {
+      if (
+        e?.message?.includes('NotAllowedError') ||
+        e?.name === 'NotAllowedError' ||
+        e?.message?.includes('Permission denied') ||
+        e?.message?.includes('permission')
+      ) {
+        setError('mic');
+        setIsMicError(true);
+      } else {
+        setError(e?.message || 'Kuch gadbad ho gayi. Kripya phir se try karein.');
+        setIsMicError(false);
+      }
+    }
+  };
+
   return (
     <div ref={ref} className="dukaan-welcome-root">
       {/* Background gradient effects */}
       <div className="dukaan-bg-gradient-1" />
       <div className="dukaan-bg-gradient-2" />
       <div className="dukaan-bg-grid" />
+
+      {/* Shopfront illustration background */}
+      <div className="dukaan-shopfront-bg">
+        <ShopfrontIllustration className="dukaan-shopfront-svg" />
+      </div>
+      <div className="dukaan-shopfront-overlay" />
 
       <section className="dukaan-welcome-section">
         {/* Badge */}
@@ -61,8 +166,8 @@ export const WelcomeView = ({
           <span>Local Commerce AI</span>
         </div>
 
-        {/* Orb */}
-        <PulsingOrb />
+        {/* Orb -> Store Icon */}
+        <StoreIcon />
 
         {/* Title */}
         <h1 className="dukaan-title">
@@ -70,9 +175,9 @@ export const WelcomeView = ({
         </h1>
 
         <p className="dukaan-subtitle">
-          Your AI-powered shop assistant for Indian local businesses.
+          Aapka apna AI shop assistant.
           <br />
-          Manage inventory, billing, payments & more — just by talking.
+          Order likhwayen, stock check karein — bas baat karke.
         </p>
 
         {/* Feature pills */}
@@ -86,7 +191,7 @@ export const WelcomeView = ({
         {/* CTA Button */}
         <Button
           size="lg"
-          onClick={onStartCall}
+          onClick={handleStart}
           className="dukaan-cta-button"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -96,6 +201,10 @@ export const WelcomeView = ({
           </svg>
           {startButtonText}
         </Button>
+
+        {/* Error displays */}
+        {isMicError && <MicErrorCard onRetry={handleStart} />}
+        {error && !isMicError && <GenericErrorCard message={error} onRetry={handleStart} />}
 
         <p className="dukaan-voice-info">
           🗣️ Powered by <strong>Murf Falcon</strong> · Indian English Voice

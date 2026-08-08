@@ -147,7 +147,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
   filter: blur(80px);
   animation: dukaan-float 8s ease-in-out infinite;
   pointer-events: none;
@@ -160,7 +160,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.12) 0%, transparent 70%);
   filter: blur(80px);
   animation: dukaan-float 10s ease-in-out infinite reverse;
   pointer-events: none;
@@ -197,9 +197,9 @@
   gap: 8px;
   padding: 6px 16px;
   border-radius: 100px;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  color: #a5b4fc;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  color: #fdba74;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -212,7 +212,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #818cf8;
+  background: #f97316;
   animation: dukaan-pulse-dot 2s ease-in-out infinite;
 }
 
@@ -231,7 +231,7 @@
   position: absolute;
   inset: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.3) 0%, rgba(234, 179, 8, 0.1) 50%, transparent 70%);
   animation: dukaan-orb-breathe 4s ease-in-out infinite;
 }
 
@@ -240,17 +240,17 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+  background: linear-gradient(135deg, #7c2d12 0%, #9a3412 50%, #c2410c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c7d2fe;
+  color: #ffedd5;
   box-shadow:
-    0 0 40px rgba(99, 102, 241, 0.3),
-    0 0 80px rgba(99, 102, 241, 0.15),
+    0 0 40px rgba(249, 115, 22, 0.3),
+    0 0 80px rgba(249, 115, 22, 0.15),
     inset 0 -4px 12px rgba(0, 0, 0, 0.3);
   animation: dukaan-orb-rotate 12s linear infinite;
-  border: 1px solid rgba(129, 140, 248, 0.3);
+  border: 1px solid rgba(253, 186, 116, 0.3);
 }
 
 /* Floating Particles */
@@ -259,7 +259,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #818cf8;
+  background: #f97316;
   opacity: 0;
   pointer-events: none;
 }
@@ -283,13 +283,13 @@
   top: 30%;
   right: 10%;
   animation: dukaan-particle-float 4s ease-in-out infinite 0.5s;
-  background: #a78bfa;
+  background: #fbbf24;
 }
 .dukaan-particle-5 {
   bottom: 15%;
   right: 30%;
   animation: dukaan-particle-float 6.5s ease-in-out infinite 1.5s;
-  background: #c4b5fd;
+  background: #fcd34d;
   width: 3px;
   height: 3px;
 }
@@ -297,7 +297,7 @@
   top: 50%;
   left: 10%;
   animation: dukaan-particle-float 5.5s ease-in-out infinite 3s;
-  background: #6366f1;
+  background: #ea580c;
   width: 5px;
   height: 5px;
 }
@@ -313,7 +313,7 @@
 }
 
 .dukaan-title-accent {
-  background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+  background: linear-gradient(135deg, #f97316, #fbbf24, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -350,8 +350,8 @@
 }
 
 .dukaan-pill:hover {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.3);
   color: #e2e8f0;
   transform: translateY(-2px);
 }
@@ -364,21 +364,21 @@
   padding: 16px 40px !important;
   height: auto !important;
   border-radius: 100px !important;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  background: linear-gradient(135deg, #ea580c, #f59e0b) !important;
   color: white !important;
   font-size: 0.9rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   border: none !important;
-  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.4), 0 0 0 1px rgba(129, 140, 248, 0.2) !important;
+  box-shadow: 0 4px 24px rgba(234, 88, 12, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.2) !important;
   transition: all 0.3s ease !important;
   cursor: pointer !important;
 }
 
 .dukaan-cta-button:hover {
   transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5), 0 0 0 1px rgba(129, 140, 248, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(234, 88, 12, 0.5), 0 0 0 1px rgba(249, 115, 22, 0.4) !important;
 }
 
 .dukaan-cta-button:active {
@@ -394,7 +394,7 @@
 }
 
 .dukaan-voice-info strong {
-  color: #818cf8;
+  color: #f97316;
 }
 
 /* Footer */
@@ -417,7 +417,323 @@
 }
 
 .dukaan-footer strong {
-  color: #818cf8;
+  color: #f97316;
+}
+
+/* ============================================================
+   SHOPFRONT ILLUSTRATION BACKGROUND
+   ============================================================ */
+
+/* Container for the shopfront SVG — fills the entire view */
+.dukaan-shopfront-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* The SVG itself — responsive sizing */
+.dukaan-shopfront-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Dark overlay on top of the illustration for text readability */
+.dukaan-shopfront-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 50%,
+    rgba(6, 6, 15, 0.2) 0%,
+    rgba(6, 6, 15, 0.4) 60%,
+    rgba(6, 6, 15, 0.8) 100%
+  );
+  pointer-events: none;
+}
+
+/* ============================================================
+   SESSION VIEW — 5 AGENT STATES
+   ============================================================ */
+
+/* State indicator container */
+.dukaan-state-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+
+/* State icon circle */
+.dukaan-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+.dukaan-state-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Connecting state */
+.dukaan-state-connecting .dukaan-state-icon {
+  background: rgba(249, 115, 22, 0.15);
+  border: 2px solid rgba(249, 115, 22, 0.4);
+  animation: dukaan-state-pulse 1.5s ease-in-out infinite;
+}
+
+/* Listening state */
+.dukaan-state-listening .dukaan-state-icon {
+  background: rgba(34, 197, 94, 0.15);
+  border: 2px solid rgba(34, 197, 94, 0.4);
+  animation: dukaan-state-pulse-green 2s ease-in-out infinite;
+}
+
+/* Speaking state */
+.dukaan-state-speaking .dukaan-state-icon {
+  background: rgba(249, 115, 22, 0.2);
+  border: 2px solid rgba(251, 191, 36, 0.5);
+  animation: dukaan-state-glow 1s ease-in-out infinite;
+}
+
+/* Thinking state */
+.dukaan-state-thinking .dukaan-state-icon {
+  background: rgba(147, 51, 234, 0.15);
+  border: 2px solid rgba(147, 51, 234, 0.4);
+  animation: dukaan-state-pulse 2s ease-in-out infinite;
+}
+
+/* Ended state */
+.dukaan-state-ended .dukaan-state-icon {
+  background: rgba(100, 116, 139, 0.15);
+  border: 2px solid rgba(100, 116, 139, 0.3);
+}
+
+/* State text */
+.dukaan-state-text {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.dukaan-state-connecting .dukaan-state-text {
+  color: #fdba74;
+}
+
+.dukaan-state-listening .dukaan-state-text {
+  color: #86efac;
+}
+
+.dukaan-state-speaking .dukaan-state-text {
+  color: #fbbf24;
+}
+
+.dukaan-state-thinking .dukaan-state-text {
+  color: #c4b5fd;
+}
+
+.dukaan-state-ended .dukaan-state-text {
+  color: #94a3b8;
+}
+
+/* State sub-text (small hint) */
+.dukaan-state-subtext {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: -8px;
+}
+
+/* Connecting spinner */
+.dukaan-connecting-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(249, 115, 22, 0.2);
+  border-top-color: #f97316;
+  border-radius: 50%;
+  animation: dukaan-spin 0.8s linear infinite;
+}
+
+/* Sound wave bars for speaking state */
+.dukaan-sound-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+
+.dukaan-sound-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: #fbbf24;
+  animation: dukaan-sound-wave 0.8s ease-in-out infinite;
+}
+
+.dukaan-sound-bar:nth-child(1) { animation-delay: 0s; height: 8px; }
+.dukaan-sound-bar:nth-child(2) { animation-delay: 0.1s; height: 16px; }
+.dukaan-sound-bar:nth-child(3) { animation-delay: 0.2s; height: 24px; }
+.dukaan-sound-bar:nth-child(4) { animation-delay: 0.3s; height: 16px; }
+.dukaan-sound-bar:nth-child(5) { animation-delay: 0.4s; height: 8px; }
+
+/* Listening mic pulse ring */
+.dukaan-mic-pulse {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  animation: dukaan-mic-ring 2s ease-out infinite;
+}
+
+/* Ended state card */
+.dukaan-ended-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 2rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  max-width: 360px;
+  width: 100%;
+}
+
+.dukaan-ended-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.dukaan-ended-card p {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Restart button */
+.dukaan-restart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #ea580c, #f59e0b);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.35);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dukaan-restart-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 28px rgba(234, 88, 12, 0.5);
+}
+
+/* ============================================================
+   MICROPHONE ERROR CARD
+   ============================================================ */
+
+.dukaan-mic-error {
+  max-width: 400px;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.dukaan-mic-error-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.dukaan-mic-error-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dukaan-mic-error-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fca5a5;
+}
+
+.dukaan-mic-error-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dukaan-mic-error-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.dukaan-mic-error-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fca5a5;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.dukaan-mic-error-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 100px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dukaan-mic-error-retry:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.5);
 }
 
 /* ============================================================
@@ -458,5 +774,103 @@
   }
   75% {
     opacity: 0.3;
+  }
+}
+
+@keyframes dukaan-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dukaan-state-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px 4px rgba(249, 115, 22, 0.15); }
+}
+
+@keyframes dukaan-state-pulse-green {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.15); }
+}
+
+@keyframes dukaan-state-glow {
+  0%, 100% { box-shadow: 0 0 10px 2px rgba(251, 191, 36, 0.2); }
+  50% { box-shadow: 0 0 25px 6px rgba(251, 191, 36, 0.3); }
+}
+
+@keyframes dukaan-sound-wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes dukaan-mic-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .dukaan-title {
+    font-size: 2rem;
+  }
+
+  .dukaan-subtitle {
+    font-size: 0.875rem;
+    padding: 0 0.5rem;
+  }
+
+  .dukaan-orb-container {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+  }
+
+  .dukaan-orb {
+    width: 75px;
+    height: 75px;
+  }
+
+  .dukaan-cta-button {
+    padding: 14px 28px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .dukaan-pills-row {
+    gap: 6px;
+    margin-bottom: 1.5rem;
+  }
+
+  .dukaan-pill {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+
+  .dukaan-badge {
+    margin-bottom: 1.5rem;
+  }
+
+  .dukaan-state-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .dukaan-state-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dukaan-ended-card {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+
+  .dukaan-mic-error {
+    margin: 1rem;
+  }
+
+  .dukaan-shopfront-bg {
+    opacity: 0.25;
   }
 }
