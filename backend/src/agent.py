@@ -1,6 +1,9 @@
 import logging
 import webbrowser
 import urllib.parse
+import sqlite3
+import json
+import datetime
 
 from dotenv import load_dotenv
 from livekit import rtc
@@ -48,13 +51,103 @@ GUARDRAILS:
 STYLE:
 Keep sentences short — you're being heard, not read. No lists, no brackets, no long sentences. Speak like you're actually standing behind a shop counter: warm, quick, a little informal. If the customer goes quiet, gently prompt them once ("Aur kuch chahiye?") rather than repeating the whole greeting.
 
-GREETING:
-When the call starts, introduce yourself warmly and briefly. Say something like: "Namaste! Dukaan Mitra here, aapka apna store assistant. Batao, aaj kya kya chahiye?" Keep it short and natural — no long welcome speeches. After the greeting, wait for the customer to speak."""
+LANGUAGE & SCRIPT:
+Always write every language in its own native script.
+- Hindi → Devanagari (नमस्ते), never romanized (never "namaste").
+- Same rule for all non-English languages.
+
+MEMORY & GREETING:
+You have tools to look up and save caller information.
+I have already pre-fetched the caller info for you at the start of the call (see CURRENT CALLER INFO below). You do NOT need to call lookup_caller immediately.
+If the caller is known, greet them by their name and optionally mention a fact about their past orders.
+If the caller is new, introduce yourself warmly and briefly (e.g. "Namaste! Dukaan Mitra here, aapka apna store assistant. Batao, aaj kya kya chahiye?"). 
+If the caller is new, ALWAYS ask for their name and ask for permission before saving their details (like usual quantities or delivery slot) using the save_caller tool. 
+CRITICAL: NEVER save caller info if they do not explicitly agree to it!"""
+
+
+def init_db():
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            user_id TEXT PRIMARY KEY,
+            name TEXT,
+            language_preference TEXT,
+            facts TEXT,
+            last_interaction TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 
 class Assistant(Agent):
-    def __init__(self) -> None:
-        super().__init__(instructions=SYSTEM_PROMPT)
+    def __init__(self, caller_id: str = "caller_123") -> None:
+        # Pre-fetch caller data manually to avoid Gemini crashing if it tries to call a tool as its very first action
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, language_preference, facts FROM users WHERE user_id = ?", (caller_id,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            name, lang, facts_str = row
+            facts = json.loads(facts_str) if facts_str else {}
+            caller_info = f"Found user: {name}, Language: {lang}, Facts: {json.dumps(facts)}"
+        else:
+            caller_info = "User not found."
+
+        dynamic_prompt = f"{SYSTEM_PROMPT}\n\nCURRENT CALLER INFO:\nThe current caller's ID is '{caller_id}'.\nInitial lookup result: {caller_info}"
+        super().__init__(instructions=dynamic_prompt)
+
+    @function_tool
+    async def lookup_caller(self, user_id: str):
+        """Use this tool to look up a caller by their user ID.
+        
+        Args:
+            user_id: The ID of the user to look up.
+        """
+        logger.info(f"Looking up caller {user_id}")
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, language_preference, facts FROM users WHERE user_id = ?", (user_id,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            name, lang, facts_str = row
+            facts = json.loads(facts_str) if facts_str else {}
+            return f"Found user: {name}, Language: {lang}, Facts: {json.dumps(facts)}"
+        return "User not found."
+
+    @function_tool
+    async def save_caller(self, user_id: str, name: str, language_preference: str, facts: str):
+        """Use this tool to save or update details about the caller.
+        
+        Args:
+            user_id: The ID of the user.
+            name: The name of the user.
+            language_preference: The user's preferred language (e.g. Hindi, English, Hinglish).
+            facts: A JSON string of facts about the user (e.g. '{"past_orders": "...", "usual_quantities": "...", "preferred_delivery_slot": "..."}').
+        """
+        logger.info(f"Saving caller {user_id}: {name}")
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        now = datetime.datetime.now().isoformat()
+        cursor.execute('''
+            INSERT INTO users (user_id, name, language_preference, facts, last_interaction)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                name=excluded.name,
+                language_preference=excluded.language_preference,
+                facts=excluded.facts,
+                last_interaction=excluded.last_interaction
+        ''', (user_id, name, language_preference, facts, now))
+        conn.commit()
+        conn.close()
+        return "Caller information saved successfully."
 
     @function_tool
     async def send_whatsapp_message(self, context: RunContext, message: str, customer_group: str):
@@ -138,7 +231,7 @@ async def my_agent(ctx: JobContext):
 
     # Start the session, which initializes the voice pipeline and warms up the models
     await session.start(
-        agent=Assistant(),
+        agent=Assistant(caller_id="caller_123"),
         room=ctx.room,
         room_options=room_io.RoomOptions(
             audio_input=room_io.AudioInputOptions(
