@@ -2,6 +2,15 @@
 
 Build a production voice AI agent in 5 minutes. Powered by the fastest TTS on the market - swap the system prompt to build anything from customer support to language tutors.
 
+---
+
+## 10 Days of Voice Agents: Day 5 - The Tools
+
+For the **Day 5** challenge, the agent has been updated with a `check_price_and_stock` tool.
+* **Data Source:** This tool uses a **hand-built local dataset** (an SQLite database `inventory.db` initialized on startup) to simulate real-time kirana store inventory and price lookups. 
+* **Timeliness:** The agent specifies that the fetched rates are "today's price".
+* **Graceful Failure:** The tool handles failures out loud gracefully (which can be tested by creating a `force_db_fail.flag` file in the backend directory).
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Murf Falcon](https://img.shields.io/badge/TTS-Murf%20Falcon-6366F1)](https://murf.ai/api/docs/text-to-speech/streaming) [![LiveKit](https://img.shields.io/badge/Transport-LiveKit-002cf2)](https://docs.livekit.io) [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
 ---

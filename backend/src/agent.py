@@ -37,13 +37,16 @@ OBJECTIVES:
 3. Answer basic questions about what kind of items the store carries, without inventing exact stock, prices, or delivery details you don't actually have.
 
 KNOWLEDGE:
-You know common grocery, household, and kirana items (rice, atta, dal, oil, spices, snacks, soap, etc.) and can hold a natural conversation about them. You do NOT have access to real-time stock, exact prices, or delivery timing — that information comes from the shop owner, not from you.
+You know common grocery, household, and kirana items (rice, atta, dal, oil, spices, snacks, soap, etc.) and can hold a natural conversation about them. You have access to a tool to check today's price and stock for items.
 
 LANGUAGE:
 Mirror the customer's language and mix. If they speak Hindi-English mixed (Hinglish), reply the same way — natural, warm, informal, like a real shopkeeper, not a call center script. If they speak pure Hindi, reply in Hindi. If they speak pure English, reply in clear Indian English. Default to a natural Hindi-English mix when unclear.
 
 GUARDRAILS:
-- Never confirm a specific price, stock availability, or delivery time as fact — you don't have that information.
+- Always use the check_price_and_stock tool to get exact prices and stock availability when the customer asks.
+- If the tool returns an ERROR or timeout, apologize gracefully and say the system is temporarily down, so you can't check the exact price right now.
+- Never invent prices or stock if the tool fails or if the item is not found.
+- When giving the price, specify that it is "today's price" (aaj ka daam).
 - Never claim an order has been placed, paid for, or delivered.
 - If asked to do something outside taking an order (payment, complaints, anything urgent), say: "Yeh main confirm nahi kar sakta, lekin main dukaan malik ko bata dunga, woh aapko jaldi call karenge."
 - Never pretend to be a human. If directly asked, be honest that you're a voice assistant for the store.
@@ -77,6 +80,30 @@ def init_db():
             last_interaction TEXT
         )
     ''')
+    conn.commit()
+    conn.close()
+
+    # Initialize local dataset for Day 5
+    conn = sqlite3.connect("inventory.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS inventory (
+            item_name TEXT PRIMARY KEY,
+            price REAL,
+            stock TEXT
+        )
+    ''')
+    cursor.execute("SELECT COUNT(*) FROM inventory")
+    if cursor.fetchone()[0] == 0:
+        inventory_data = [
+            ("rice", 60.0, "available"),
+            ("atta", 45.0, "available"),
+            ("dal", 120.0, "limited"),
+            ("sugar", 40.0, "available"),
+            ("oil", 150.0, "out of stock"),
+            ("soap", 30.0, "available")
+        ]
+        cursor.executemany("INSERT INTO inventory VALUES (?, ?, ?)", inventory_data)
     conn.commit()
     conn.close()
 
@@ -148,6 +175,36 @@ class Assistant(Agent):
         conn.commit()
         conn.close()
         return "Caller information saved successfully."
+
+    @function_tool
+    async def check_price_and_stock(self, item_name: str):
+        """Use this tool to check today's price and stock availability for a specific grocery item.
+        
+        Args:
+            item_name: The standard English/Hinglish name of the item (e.g., use 'atta' for aate/flour, 'rice' for chawal, 'dal' for daal, 'sugar' for cheeni).
+        """
+        logger.info(f"Checking price and stock for {item_name}")
+        
+        # Simulating API timeout/failure handling
+        import os
+        if os.path.exists("force_db_fail.flag"):
+            return "ERROR: The inventory system database connection timed out. Please tell the user you cannot check prices right now and apologize gracefully."
+
+        try:
+            conn = sqlite3.connect("inventory.db", timeout=1.0)
+            cursor = conn.cursor()
+            cursor.execute("SELECT price, stock FROM inventory WHERE item_name LIKE ?", (f"%{item_name.lower().strip()}%",))
+            row = cursor.fetchone()
+            conn.close()
+            
+            if row:
+                price, stock = row
+                return f"SUCCESS: Today's price is ₹{price}. Stock status is '{stock}'."
+            else:
+                return f"NOT FOUND: I don't see {item_name} in today's catalog."
+        except Exception as e:
+            logger.error(f"Inventory lookup failed: {e}")
+            return "ERROR: The inventory system is currently down. Please tell the user you cannot check prices right now and apologize gracefully."
 
     @function_tool
     async def send_whatsapp_message(self, context: RunContext, message: str, customer_group: str):
