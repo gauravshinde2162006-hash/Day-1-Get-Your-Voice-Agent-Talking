@@ -5,6 +5,8 @@ import sqlite3
 import json
 import datetime
 
+import uuid
+
 from dotenv import load_dotenv
 from livekit import rtc
 from livekit.agents import (
@@ -36,6 +38,7 @@ OBJECTIVES:
 2. Read the order back clearly to confirm you understood it correctly before treating it as final.
 3. Answer basic questions about what kind of items the store carries, without inventing exact stock, prices, or delivery details you don't actually have.
 4. OUTBOUND MANDATE: In your very first response, you must state who is calling, why you are calling, and how to make it stop (e.g. "If you don't want these calls, just tell me to stop.").
+5. ESCALATION: If the caller has a payment, refund, or order dispute, OR reports a missing or spoiled item, you must escalate the issue to a human using the create_escalation tool. Ask for their permission first and tell them what details you will share (who, what happened, what was checked, urgency, and language/follow-up). If they say no, do not escalate. If they say yes, YOU MUST ACTUALLY CALL the `create_escalation` tool function! Do not just pretend to create it. You must call the tool, wait for the response, and then give the customer the real reference ID returned by the tool, explaining what will happen next (e.g. "A human agent will contact you within 24 hours").
 
 KNOWLEDGE:
 You know common grocery, household, and kirana items (rice, atta, dal, oil, spices, snacks, soap, etc.) and can hold a natural conversation about them. You have access to a tool to check today's price and stock for items.
@@ -72,6 +75,18 @@ def init_db():
             language_preference TEXT,
             facts TEXT,
             last_interaction TEXT
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS escalations (
+            id TEXT PRIMARY KEY,
+            who TEXT,
+            what TEXT,
+            checked TEXT,
+            urgency TEXT,
+            language_and_follow_up TEXT,
+            status TEXT,
+            created_at TEXT
         )
     ''')
     conn.commit()
@@ -204,6 +219,32 @@ class Assistant(Agent):
         except Exception as e:
             logger.error(f"Inventory lookup failed: {e}")
             return "ERROR: The inventory system is currently down. Please tell the user you cannot check prices right now and apologize gracefully."
+
+    @function_tool
+    async def create_escalation(self, who: str, what: str, checked: str, urgency: str, language_and_follow_up: str):
+        """Use this tool to create a human support request (escalation). ONLY use after getting the caller's explicit permission.
+        
+        Args:
+            who: Who needs help (e.g. caller name or ID).
+            what: What happened (the issue/dispute).
+            checked: What the agent already checked.
+            urgency: Urgency level (low, medium, high, emergency).
+            language_and_follow_up: The caller's language and preferred follow-up method.
+        """
+        logger.info(f"Creating escalation for {who}")
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        ref_id = f"REF-{str(uuid.uuid4())[:8].upper()}"
+        now = datetime.datetime.now().isoformat()
+        
+        cursor.execute('''
+            INSERT INTO escalations (id, who, what, checked, urgency, language_and_follow_up, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (ref_id, who, what, checked, urgency, language_and_follow_up, "OPEN", now))
+        
+        conn.commit()
+        conn.close()
+        return f"Escalation successfully created. The reference ID is {ref_id}."
 
     @function_tool
     async def send_whatsapp_message(self, context: RunContext, message: str, customer_group: str):
