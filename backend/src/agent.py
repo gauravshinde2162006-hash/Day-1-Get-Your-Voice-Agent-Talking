@@ -37,8 +37,9 @@ OBJECTIVES:
 1. Understand what the customer wants to order — items and quantities — even if they mention things casually or in mixed language.
 2. Read the order back clearly to confirm you understood it correctly before treating it as final.
 3. Answer basic questions about what kind of items the store carries, without inventing exact stock, prices, or delivery details you don't actually have.
-4. OUTBOUND MANDATE: In your very first response, you must state who is calling, why you are calling, and how to make it stop (e.g. "If you don't want these calls, just tell me to stop.").
-5. ESCALATION: If the caller has a payment, refund, or order dispute, OR reports a missing or spoiled item, you must escalate the issue to a human using the create_escalation tool. Ask for their permission first and tell them what details you will share (who, what happened, what was checked, urgency, and language/follow-up). If they say no, do not escalate. If they say yes, YOU MUST ACTUALLY CALL the `create_escalation` tool function! Do not just pretend to create it. You must call the tool, wait for the response, and then give the customer the real reference ID returned by the tool, explaining what will happen next (e.g. "A human agent will contact you within 24 hours").
+4. When the customer confirms their order after you read it back, you MUST use the confirm_order tool to finalize it. This marks the call as successful.
+5. OUTBOUND MANDATE: In your very first response, you must state who is calling, why you are calling, and how to make it stop (e.g. "If you don't want these calls, just tell me to stop.").
+6. ESCALATION: If the caller has a payment, refund, or order dispute, OR reports a missing or spoiled item, you must escalate the issue to a human using the create_escalation tool. Ask for their permission first and tell them what details you will share (who, what happened, what was checked, urgency, and language/follow-up). If they say no, do not escalate. If they say yes, YOU MUST ACTUALLY CALL the `create_escalation` tool function! Do not just pretend to create it. You must call the tool, wait for the response, and then give the customer the real reference ID returned by the tool, explaining what will happen next (e.g. "A human agent will contact you within 24 hours").
 
 KNOWLEDGE:
 You know common grocery, household, and kirana items (rice, atta, dal, oil, spices, snacks, soap, etc.) and can hold a natural conversation about them. You have access to a tool to check today's price and stock for items.
@@ -86,6 +87,14 @@ def init_db():
             urgency TEXT,
             language_and_follow_up TEXT,
             status TEXT,
+            created_at TEXT
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS calls (
+            id TEXT PRIMARY KEY,
+            status TEXT,
+            reason TEXT,
             created_at TEXT
         )
     ''')
@@ -142,6 +151,21 @@ class Assistant(Agent):
         chat_ctx.add_message(role="assistant", content="Namaste, this is Dukaan Mitra calling from the kirana store. I am calling to check if you need your monthly restock of atta and dal. If you don't want these calls, just say stop.")
         
         super().__init__(instructions=dynamic_prompt, chat_ctx=chat_ctx)
+        
+        self.call_successful = False
+        self.call_reason = "Customer hung up or did not complete order."
+
+    @function_tool
+    async def confirm_order(self, items_ordered: str):
+        """Use this tool ONLY when the customer explicitly confirms their restock order after you have read it back to them.
+        
+        Args:
+            items_ordered: The final list of items and quantities confirmed by the customer.
+        """
+        logger.info(f"Order confirmed: {items_ordered}")
+        self.call_successful = True
+        self.call_reason = f"Order successfully confirmed: {items_ordered}"
+        return f"Order for {items_ordered} has been recorded successfully. Please tell the customer their order is placed and say goodbye."
 
     @function_tool
     async def lookup_caller(self, user_id: str):
@@ -326,9 +350,11 @@ async def my_agent(ctx: JobContext):
     # # Start the avatar and wait for it to join
     # await avatar.start(session, room=ctx.room)
 
+    assistant_instance = Assistant(caller_id="caller_123")
+    
     # Start the session, which initializes the voice pipeline and warms up the models
     await session.start(
-        agent=Assistant(caller_id="caller_123"),
+        agent=assistant_instance,
         room=ctx.room,
         room_options=room_io.RoomOptions(
             audio_input=room_io.AudioInputOptions(
@@ -341,6 +367,25 @@ async def my_agent(ctx: JobContext):
             ),
         ),
     )
+
+    call_id = ctx.room.name
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR IGNORE INTO calls (id, status, reason, created_at) VALUES (?, ?, ?, ?)", 
+                   (call_id, "in_progress", "Call started", datetime.datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
+    @ctx.room.on("disconnected")
+    def on_disconnected(*args, **kwargs):
+        status = "successful" if getattr(assistant_instance, 'call_successful', False) else "failed"
+        reason = getattr(assistant_instance, 'call_reason', "Unknown")
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("UPDATE calls SET status = ?, reason = ? WHERE id = ?", (status, reason, call_id))
+        conn.commit()
+        conn.close()
+        logger.info(f"Call {call_id} ended with status: {status}")
 
     # Join the room and connect to the user
     await ctx.connect()
