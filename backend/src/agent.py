@@ -4,7 +4,7 @@ import urllib.parse
 import sqlite3
 import json
 import datetime
-
+import random
 import uuid
 
 from dotenv import load_dotenv
@@ -31,7 +31,7 @@ load_dotenv(".env.local")
 
 # Change this prompt to change what your voice agent does.
 # See README.md for example prompts (customer support, language tutor, receptionist).
-SYSTEM_PROMPT = """You are Dukaan Mitra, a friendly voice assistant for a local kirana (general) store. You work for the shop owner. You are making an OUTBOUND call to a regular customer to remind them about their monthly restock.
+SYSTEM_PROMPT = """You are Dukaan Mitra, a friendly female voice assistant for a local kirana (general) store. You work for the shop owner. You are making an OUTBOUND call to a regular customer to remind them about their monthly restock.
 
 OBJECTIVES:
 1. Understand what the customer wants to order — items and quantities — even if they mention things casually or in mixed language.
@@ -39,13 +39,14 @@ OBJECTIVES:
 3. Answer basic questions about what kind of items the store carries, without inventing exact stock, prices, or delivery details you don't actually have.
 4. When the customer confirms their order after you read it back, you MUST use the confirm_order tool to finalize it. This marks the call as successful.
 5. OUTBOUND MANDATE: In your very first response, you must state who is calling, why you are calling, and how to make it stop (e.g. "If you don't want these calls, just tell me to stop.").
-6. ESCALATION: If the caller has a payment, refund, or order dispute, OR reports a missing or spoiled item, you must escalate the issue to a human using the create_escalation tool. Ask for their permission first and tell them what details you will share (who, what happened, what was checked, urgency, and language/follow-up). If they say no, do not escalate. If they say yes, YOU MUST ACTUALLY CALL the `create_escalation` tool function! Do not just pretend to create it. You must call the tool, wait for the response, and then give the customer the real reference ID returned by the tool, explaining what will happen next (e.g. "A human agent will contact you within 24 hours").
+6. RETURNS AND REFUNDS: If the caller has a payment, refund, or order dispute, OR reports a missing or spoiled item, you must use the transfer_to_returns_specialist tool. Hand them over to the specialist for all return and refund matters.
 
 KNOWLEDGE:
 You know common grocery, household, and kirana items (rice, atta, dal, oil, spices, snacks, soap, etc.) and can hold a natural conversation about them. You have access to a tool to check today's price and stock for items.
 
 LANGUAGE:
-Mirror the customer's language and mix. If they speak Hindi-English mixed (Hinglish), reply the same way — natural, warm, informal, like a real shopkeeper, not a call center script. If they speak pure Hindi, reply in Hindi. If they speak pure English, reply in clear Indian English. Default to a natural Hindi-English mix when unclear.
+Mirror the customer's language and mix. If they speak Hindi-English mixed (Hinglish), reply the same way — natural, warm, informal, like a real shopkeeper, not a call center script. 
+CRITICAL: You are a female assistant. When speaking Hindi or Hinglish, ALWAYS use female grammatical forms. Say "main kar dungi", "main samajhti hu", "main dekh leti hu". NEVER use male forms like "main samajhta hu". Default to a natural Hindi-English mix when unclear.
 
 GUARDRAILS:
 - Always use the check_price_and_stock tool to get exact prices and stock availability when the customer asks.
@@ -98,6 +99,13 @@ def init_db():
             created_at TEXT
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orders (
+            id TEXT PRIMARY KEY,
+            items TEXT,
+            created_at TEXT
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -126,6 +134,73 @@ def init_db():
     conn.close()
 
 init_db()
+
+
+RETURNS_SPECIALIST_PROMPT = """You are Pooja, the Returns and Refunds Specialist for Dukaan Mitra. 
+You are a female assistant. You handle customer complaints about spoiled items, expired goods, incorrect orders, and payment issues.
+Be concise, empathetic, and helpful. Guide them through the return or refund process.
+Your responses should be in the same language mix (Hinglish/Hindi/English) the customer uses.
+CRITICAL: Always use female grammatical forms in Hindi/Hinglish (e.g. "main samajhti hu", "main kar dungi", NEVER "main samajhta hu").
+IMPORTANT: Once you understand the issue and get their order details (like order number), you MUST use the `log_return_request` tool to save it into the system.
+Keep sentences short and natural."""
+
+from livekit.agents.llm import ChatContext
+
+class ReturnsSpecialist(Agent):
+    def __init__(self, chat_ctx: ChatContext | None = None) -> None:
+        super().__init__(
+            instructions=RETURNS_SPECIALIST_PROMPT,
+            chat_ctx=chat_ctx,
+            tts=murf.TTS(
+                voice="Pooja",
+                style="Conversation",
+                tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=1),
+                text_pacing=True,
+            ),
+        )
+
+    async def on_enter(self) -> None:
+        await self.session.generate_reply(
+            instructions="Introduce yourself as the Returns and Refunds Specialist and ask how you can help them with their issue."
+        )
+
+    @function_tool
+    async def log_return_request(self, order_number: str, issue_description: str):
+        """Use this tool to officially log a return or refund request into the system.
+        
+        Args:
+            order_number: The order number the customer provided (e.g., ORD-12345).
+            issue_description: What was wrong with the order.
+        """
+        # Sanitize the input from speech-to-text (remove spaces, hyphens, and make uppercase just in case)
+        import re
+        clean_order_number = re.sub(r'[^A-Z0-9]', '', str(order_number).upper().strip())
+        
+        logger.info(f"Logging return for order {clean_order_number} (Original STT: {order_number})")
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        
+        # Verify order exists
+        cursor.execute("SELECT items FROM orders WHERE id = ?", (clean_order_number,))
+        row = cursor.fetchone()
+        
+        if not row:
+            conn.close()
+            return f"ERROR: Order ID '{clean_order_number}' does not exist in our system. Please ask the customer to double-check their Order ID."
+            
+        original_items = row[0]
+        
+        ref_id = f"RET-{str(uuid.uuid4())[:8].upper()}"
+        now = datetime.datetime.now().isoformat()
+        
+        cursor.execute('''
+            INSERT INTO escalations (id, who, what, checked, urgency, language_and_follow_up, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (ref_id, f"Order {order_number}", issue_description, f"Verified order exists (Original items: {original_items})", "High", "Needs manual refund", "OPEN", now))
+        
+        conn.commit()
+        conn.close()
+        return f"Return logged successfully. The reference ID is {ref_id}. Tell the customer their return is logged."
 
 
 class Assistant(Agent):
@@ -163,9 +238,20 @@ class Assistant(Agent):
             items_ordered: The final list of items and quantities confirmed by the customer.
         """
         logger.info(f"Order confirmed: {items_ordered}")
+        
+        # Generate a simple numeric 5-digit Order ID (easier for STT to parse)
+        order_id = str(random.randint(10000, 99999))
+        
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        now = datetime.datetime.now().isoformat()
+        cursor.execute("INSERT INTO orders (id, items, created_at) VALUES (?, ?, ?)", (order_id, items_ordered, now))
+        conn.commit()
+        conn.close()
+        
         self.call_successful = True
-        self.call_reason = f"Order successfully confirmed: {items_ordered}"
-        return f"Order for {items_ordered} has been recorded successfully. Please tell the customer their order is placed and say goodbye."
+        self.call_reason = f"Order successfully confirmed: {items_ordered} (ID: {order_id})"
+        return f"Order has been recorded successfully. The Order ID is {order_id}. You MUST read this exact Order ID to the customer so they have it for future reference, and then say goodbye."
 
     @function_tool
     async def lookup_caller(self, user_id: str):
@@ -286,6 +372,17 @@ class Assistant(Agent):
         
         return f"Message successfully sent to {customer_group} on WhatsApp. WhatsApp should now open in your browser."
 
+    @function_tool
+    async def transfer_to_returns_specialist(self, context: RunContext) -> tuple[Agent, str]:
+        """Transfer the user to the returns and refunds specialist.
+        Use this tool when the customer wants to return an item, get a refund, or complains about a spoiled/incorrect item.
+        """
+        logger.info("Transferring to ReturnsSpecialist")
+        returns_specialist = ReturnsSpecialist(
+            chat_ctx=self.chat_ctx.copy(exclude_instructions=True)
+        )
+        return returns_specialist, "I will connect you to our Returns and Refunds specialist."
+
 
 server = AgentServer()
 
@@ -320,7 +417,7 @@ async def my_agent(ctx: JobContext):
         tts=murf.TTS(
                 voice="Anisha",
                 style="Conversation",
-                tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=2),
+                tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=1),
                 text_pacing=True
             ),
         # VAD and turn detection are used to determine when the user is speaking and when the agent should respond

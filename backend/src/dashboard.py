@@ -18,26 +18,124 @@ class DashboardHandler(http.server.SimpleHTTPRequestHandler):
             <head>
                 <title>Agent Analytics Dashboard</title>
                 <meta http-equiv="refresh" content="5">
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
                 <style>
-                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
-                    .stats-container { display: flex; gap: 20px; margin-bottom: 30px; }
-                    .stat-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex: 1; text-align: center; }
-                    .stat-box h2 { margin: 0 0 10px 0; color: #666; font-size: 1.2em; }
-                    .stat-box .number { font-size: 2.5em; font-weight: bold; color: #2c3e50; }
-                    .stat-box.success .number { color: #27ae60; }
-                    .stat-box.failed .number { color: #e74c3c; }
-                    table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; }
-                    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-                    th { background-color: #f8f9fa; font-weight: bold; }
-                    tr:nth-child(even) { background-color: #f9f9f9; }
-                    h1, h2 { color: #2c3e50; }
-                    .status-successful { color: #27ae60; font-weight: bold; }
-                    .status-failed { color: #e74c3c; font-weight: bold; }
-                    .status-in_progress { color: #f39c12; font-weight: bold; }
+                    :root {
+                        --bg-gradient: linear-gradient(135deg, #111827, #000000);
+                        --card-bg: rgba(0, 0, 0, 0.5);
+                        --card-border: rgba(249, 115, 22, 0.3);
+                        --text-main: #f8fafc;
+                        --text-muted: #94a3b8;
+                        --accent: #f97316;
+                        --success: #10b981;
+                        --danger: #ef4444;
+                        --warning: #f59e0b;
+                    }
+                    body {
+                        font-family: 'Inter', sans-serif;
+                        margin: 0;
+                        padding: 40px 20px;
+                        background: var(--bg-gradient);
+                        background-attachment: fixed;
+                        color: var(--text-main);
+                        min-height: 100vh;
+                    }
+                    h1 {
+                        text-align: center;
+                        font-weight: 700;
+                        font-size: 2.5rem;
+                        margin-bottom: 40px;
+                        background: -webkit-linear-gradient(#f97316, #fdba74);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        text-shadow: 0 4px 20px rgba(249, 115, 22, 0.2);
+                    }
+                    h2 {
+                        font-weight: 600;
+                        color: var(--accent);
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid var(--card-border);
+                        padding-bottom: 10px;
+                    }
+                    .stats-container {
+                        display: flex;
+                        gap: 25px;
+                        margin-bottom: 40px;
+                        max-width: 1200px;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+                    .stat-box {
+                        background: var(--card-bg);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        border: 1px solid var(--card-border);
+                        padding: 25px;
+                        border-radius: 16px;
+                        flex: 1;
+                        text-align: center;
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                    }
+                    .stat-box:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                        background: rgba(255, 255, 255, 0.08);
+                    }
+                    .stat-box h2 {
+                        margin: 0 0 15px 0;
+                        color: var(--text-muted);
+                        font-size: 1.1rem;
+                        border: none;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+                    .stat-box .number {
+                        font-size: 3.5rem;
+                        font-weight: 700;
+                        color: var(--text-main);
+                    }
+                    .stat-box.success .number { color: var(--success); text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+                    .stat-box.failed .number { color: var(--danger); text-shadow: 0 0 20px rgba(244, 63, 94, 0.3); }
+                    
+                    .table-wrapper {
+                        max-width: 1200px;
+                        margin: 0 auto 40px auto;
+                        background: var(--card-bg);
+                        backdrop-filter: blur(12px);
+                        border: 1px solid var(--card-border);
+                        border-radius: 16px;
+                        padding: 25px;
+                        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                    }
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                        color: var(--text-main);
+                    }
+                    th, td {
+                        padding: 15px;
+                        text-align: left;
+                        border-bottom: 1px solid var(--card-border);
+                    }
+                    th {
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        text-transform: uppercase;
+                        font-size: 0.85rem;
+                        letter-spacing: 1px;
+                    }
+                    tr:last-child td { border-bottom: none; }
+                    tr { transition: background 0.2s ease; }
+                    tr:hover td { background: rgba(255, 255, 255, 0.03); }
+                    
+                    .status-successful { color: var(--success); font-weight: 600; }
+                    .status-failed { color: var(--danger); font-weight: 600; }
+                    .status-in_progress { color: var(--warning); font-weight: 600; }
                 </style>
             </head>
             <body>
-                <h1>Agent Analytics Dashboard</h1>
+                <h1>Dukaan Mitra Analytics</h1>
             """
             
             try:
@@ -77,18 +175,35 @@ class DashboardHandler(http.server.SimpleHTTPRequestHandler):
                         </div>
                         """
                         
-                        html += "<h2>Recent Calls</h2><table><tr><th>Call ID</th><th>Status</th><th>Reason</th><th>Time</th></tr>"
+                        # Orders
+                        html += "<div class='table-wrapper'><h2>Active Orders</h2>"
+                        cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='orders'")
+                        if cursor.fetchone()[0] == 1:
+                            html += "<table><tr><th>Order ID</th><th>Items</th><th>Created At</th></tr>"
+                            cursor.execute("SELECT id, items, created_at FROM orders ORDER BY created_at DESC")
+                            rows = cursor.fetchall()
+                            if rows:
+                                for row in rows:
+                                    html += f"<tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td></tr>"
+                            else:
+                                html += "<tr><td colspan='3'>No active orders found.</td></tr>"
+                            html += "</table>"
+                        else:
+                            html += "<p>Orders table not created yet.</p>"
+                        html += "</div>"
+                        
+                        html += "<div class='table-wrapper'><h2>Recent Calls</h2><table><tr><th>Call ID</th><th>Status</th><th>Reason</th><th>Time</th></tr>"
                         cursor.execute("SELECT id, status, reason, created_at FROM calls ORDER BY created_at DESC LIMIT 10")
                         rows = cursor.fetchall()
                         for row in rows:
                             status_class = f"status-{row[1]}"
                             html += f"<tr><td>{row[0]}</td><td class='{status_class}'>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>"
-                        html += "</table>"
+                        html += "</table></div>"
                     else:
                         html += "<p>Calls table not created yet. Run the agent to initialize it.</p>"
 
                     # Escalations
-                    html += "<h2>Active Escalations</h2>"
+                    html += "<div class='table-wrapper'><h2>Active Escalations</h2>"
                     cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='escalations'")
                     if cursor.fetchone()[0] == 1:
                         html += "<table><tr><th>ID</th><th>Who</th><th>What</th><th>Checked</th><th>Urgency</th><th>Lang/Follow-up</th><th>Status</th><th>Created At</th></tr>"
@@ -106,6 +221,7 @@ class DashboardHandler(http.server.SimpleHTTPRequestHandler):
                         html += "</table>"
                     else:
                         html += "<p>Escalations table not created yet.</p>"
+                    html += "</div>"
                         
                     conn.close()
                 else:
